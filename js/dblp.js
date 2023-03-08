@@ -37,30 +37,30 @@ dblp.appendRanks = function () {
         let element = $(this);
         let source = element.attr("href");
         if (source.length != 0 && !element.next().hasClass("ccf-rank")) {
-            for (let getRankSpan of dblp.rankSpanList) {
+            
                 
-                let issueName = element.find("span[itemprop=issueNumber]").text();
-                if(issueName.length != 0 && isNaN(issueName)){
-                    var abbrName = abbr2Fullname[issueName];
-                    if(typeof(abbrName) != "undefined"){ 
-                        element.after(getRankSpan(issueName, 'abbr'));
-                        continue;
-                    }
+            let issueName = element.find("span[itemprop=issueNumber]").text();
+            if(issueName.length != 0 && isNaN(issueName)){
+                var abbrName = abbr2Fullname[issueName];
+                if(typeof(abbrName) != "undefined"){ 
+                    showRank_abbr(element, abbrName)
+                    return
                 }
-
-                let urls = source.substring(
-                    source.indexOf("/db/") + 3,
-                    source.lastIndexOf(".html")
-                );
-                var pattern = /[0-9]{1,4}(-[0-9]{1,4})?$/;
-                if (pattern.test(urls)) {
-                    urls = urls.replace(pattern, "");
-                } else {
-                    urls = ""
-                }
-                ;
-                showRank_url(element, url)
             }
+
+            let urls = source.substring(
+                source.indexOf("/db/") + 3,
+                source.lastIndexOf(".html")
+            );
+            var pattern = /[0-9]{1,4}(-[0-9]{1,4})?$/;
+            if (pattern.test(urls)) {
+                urls = urls.replace(pattern, "");
+            } else {
+                urls = ""
+            }
+            ;
+            showRank_url(element, url)
+        
         }
     });
 };
@@ -69,13 +69,13 @@ dblp.appendRank = function (selector) {
     let element = $(selector);
     let headline = window.location.pathname;
     if (headline.length != 0) {
-        for (let getRankSpan of dblp.rankSpanList) {
-            let urls = headline.substring(
-                headline.indexOf("/db/") + 3,
-                headline.lastIndexOf("/")
-            );
-            url = URL2LongURL[urls];
-            showRank_url(element, url)
-        }
+       
+        let urls = headline.substring(
+            headline.indexOf("/db/") + 3,
+            headline.lastIndexOf("/")
+        );
+        url = URL2LongURL[urls];
+        showRank_url(element, url)
+        
     }
 };

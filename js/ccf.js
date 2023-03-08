@@ -38,7 +38,7 @@ function getRankSpan  (rank, abbr) {
     
     span
         .addClass("ccf-tooltip")
-        .append($("<pre>").addClass("ccf-tooltiptext").text("(" + abbr + ")"));
+        .append($("<pre>").addClass("ccf-tooltiptext").text(abbr + " - " + abbr2Fullname[abbr]));
     
     return span;
 };
@@ -52,13 +52,19 @@ function showRank_dblp(node, title, authorA) {
 }
 
 function showRank_abbr(node, abbr) {
-    let rank_abbr = getRankByAbbr(abbr);
-    let span = getRankSpan(rank_abbr.rank, rank_abbr.abbr);
+    let { rank:rank } = getRankByAbbr(abbr);
+    if (rank === undefined) {
+        return
+    }
+    let span = getRankSpan(rank, abbr);
     node.after(span);
 }
 
 function showRank_url(node, url) {
-    let rank_abbr = getRankByURL(url);
-    let span = getRankSpan(rank_abbr.rank, rank_abbr.abbr);
+    let { rank:rank, abbr:abbr } = getRankByURL(url);
+    if (rank === undefined) {
+        return
+    }
+    let span = getRankSpan(rank, abbr);
     node.after(span);
 }
