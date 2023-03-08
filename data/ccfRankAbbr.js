@@ -4,7 +4,7 @@
  * Copyright (c) 2019-2023 WenyanLiu (https://github.com/WenyanLiu/CCFrank4dblp)
  */
 
- ccf.rankAbbrName = {
+ const URL2Abbr = {
     "/journals/tocs/tocs": "TOCS",
     "/journals/tos/tos": "TOS",
     "/journals/tcad/tcad": "TCAD",

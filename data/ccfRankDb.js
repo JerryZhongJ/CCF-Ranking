@@ -4,7 +4,7 @@
  * Copyright (c) 2019-2023 WenyanLiu (https://github.com/WenyanLiu/CCFrank4dblp)
  */
 
- ccf.rankDb = {
+ const URL2LongURL = {
     "/journals/tocs": "/journals/tocs/tocs",
     "/journals/tos": "/journals/tos/tos",
     "/journals/tcad": "/journals/tcad/tcad",

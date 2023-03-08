@@ -1,10 +1,10 @@
 {
   "extName": {
-    "message": "CCFrank",
+    "message": "CCF Rank",
     "description": "Extension name."
   },
   "extDesc": {
-    "message": "Displays CCF recommended rank of conferences/journals in dblp, Google Scholar, Connected Papers and WoS.",
+    "message": "Show CCF rank in Google Scholar, Connected Papers, Semantic Scholar, etc.",
     "description": "Extension description."
   }
 }

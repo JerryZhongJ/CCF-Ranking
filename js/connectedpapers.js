@@ -29,7 +29,7 @@ connectedpapers.appendRank = function () {
     let title = titlenode.innerText;
     let author = (datanode[0].innerText).split(/[\s.,]+/)[1];
     let year = datanode[1].innerText;
-    fetchRank($(titlenode).find("h5"), title, author, year, connectedpapers);
+    showRank_dblp($(titlenode).find("h5"), title, author)
 };
 
 connectedpapers.appendRanks = function () {
@@ -42,6 +42,7 @@ connectedpapers.appendRanks = function () {
         let title = titlenode.innerText;
         let author = (datanode[0].innerText).split(/[\s.,]+/)[1];
         let year = datanode[1].innerText;
-        fetchRank($(titlenode).find("h5"), title, author, year, connectedpapers);
+       
+        showRank_dblp($(titlenode).find("h5"), title, author)
     });
 };

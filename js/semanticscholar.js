@@ -31,7 +31,7 @@ semanticscholar.appendRanks = function () {
                 if (source.includes('\'')) {
                     source = source.substring(0, source.indexOf('\'')).trim();
                 }
-                element.after(getRankSpan(source, 'abbr'));
+                showRank_abbr(element, source)
             }
         }
     });
@@ -46,8 +46,8 @@ semanticscholar.appendRank = function (selector) {
                 headline.indexOf("/db/") + 3,
                 headline.lastIndexOf("/")
             );
-            url = ccf.rankDb[urls];
-            element.after(getRankSpan(url, "url"));
+            url = URL2LongURL[urls];
+            showRank_url(element, url)
         }
     }
 };

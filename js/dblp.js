@@ -41,7 +41,7 @@ dblp.appendRanks = function () {
                 
                 let issueName = element.find("span[itemprop=issueNumber]").text();
                 if(issueName.length != 0 && isNaN(issueName)){
-                    var abbrName = ccf.abbrFull[issueName];
+                    var abbrName = abbr2Fullname[issueName];
                     if(typeof(abbrName) != "undefined"){ 
                         element.after(getRankSpan(issueName, 'abbr'));
                         continue;
@@ -59,7 +59,7 @@ dblp.appendRanks = function () {
                     urls = ""
                 }
                 ;
-                element.after(getRankSpan(urls, "url"));
+                showRank_url(element, url)
             }
         }
     });
@@ -74,8 +74,8 @@ dblp.appendRank = function (selector) {
                 headline.indexOf("/db/") + 3,
                 headline.lastIndexOf("/")
             );
-            url = ccf.rankDb[urls];
-            element.after(getRankSpan(url, "url"));
+            url = URL2LongURL[urls];
+            showRank_url(element, url)
         }
     }
 };

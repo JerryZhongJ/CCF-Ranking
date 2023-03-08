@@ -104,7 +104,6 @@
         "https://scholar.google.si/*",
         "https://scholar.google.sk/*",
         "https://www.connectedpapers.com/main/*",
-        "https://www.webofscience.com/*",
         "https://www.semanticscholar.org/*"
       ],
       "css": [
@@ -116,7 +115,6 @@
         "js/connectedpapers.js",
         "js/scholar.js",
         "js/semanticscholar.js",
-        "js/wos.js",
         "js/ccf.js",
         "js/fetchRank.js",
         "data/ccfRankAbbr.js",

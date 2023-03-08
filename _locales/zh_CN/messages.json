@@ -1,10 +1,10 @@
 {
   "extName": {
-    "message": "CCFrank",
+    "message": "CCF Rank",
     "description": "Extension name."
   },
   "extDesc": {
-    "message": "在dblp、Google学术、Connected Papers和WoS的搜索结果中显示中国计算机学会推荐的会议和期刊排名。",
+    "message": "在谷歌学术、Connected Papers、Semantic Scholar等显示CCF排名",
     "description": "Extension description."
   }
 }

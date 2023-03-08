@@ -4,72 +4,61 @@
  * Copyright (c) 2019-2023 WenyanLiu (https://github.com/WenyanLiu/CCFrank4dblp), Kai Chen (https://github.com/FunClip)
  */
 
-const ccf = {};
 
-ccf.getRankInfo = function (refine, type) {
-    let rankInfo = {};
-    rankInfo.ranks = [];
-    rankInfo.info = "";
+function getRankByURL(url) {
+   
+    
     let rank;
-    let url;
-    if (type == "url") {
-        rank = ccf.rankUrl[refine];
-        url = refine;
-    } else if (type == 'abbr') {
-        let full = ccf.abbrFull[refine];
-        url = ccf.fullUrl[full];
-        if (full === undefined) {
-            refine = refine.substring(0, refine.length - 1);
-            var res = Object.keys(ccf.fullUrl).filter(function (k) {
-                return k.indexOf(refine.toUpperCase()) == 0;
-            });
-            url = res ? ccf.fullUrl[res] : false;
-        }
-        rank = ccf.rankUrl[url];
-    } else if (type == 'meeting') {
-        let full = ccf.abbrFull[refine];
-        url = ccf.fullUrl[full];
-        rank = ccf.rankUrl[url];
-    } else {
-        url = ccf.fullUrl[refine];
-        rank = ccf.rankUrl[url];
+    let abbr;
+    rank = URL2Rank[url];
+
+    if (rank !== undefined) {
+        abbr = URL2Abbr[url];
     }
-    if (rank == undefined) {
-        rank = "none";
-        rankInfo.info += "Not Found\n";
-    } else {
-        rankInfo.info += ccf.rankFullName[url];
-        let abbrname = ccf.rankAbbrName[url];
-        if (abbrname != "") {
-            rankInfo.info += " (" + abbrname + ")";
-        }
-        rankInfo.info += ": CCF " + rank + "\n";
-    }
-    rankInfo.ranks.push(rank);
-    return rankInfo;
+
+    return {rank: rank, abbr: abbr};
 };
 
-ccf.getRankClass = function (ranks) {
-    for (let rank of "ABC") {
-        for (let r of ranks) {
-            if (r[0] == rank) {
-                return "ccf-" + rank.toLowerCase();
-            }
-        }
-    }
-    return "ccf-none";
-};
+function getRankByAbbr(abbr) {
 
-ccf.getRankSpan = function (refine, type) {
-    let rankInfo = ccf.getRankInfo(refine, type);
+    let full = abbr2Fullname[abbr];
+    let url = fullname2Url[full];
+    let rank = URL2Rank[url];
+    return {rank: rank, abbr: abbr}
+    
+}
+
+
+
+function getRankSpan  (rank, abbr) {
     let span = $("<span>")
         .addClass("ccf-rank")
-        .addClass(ccf.getRankClass(rankInfo.ranks))
-        .text("CCF " + rankInfo.ranks.join("/"));
-    if (rankInfo.info.length != 0) {
-        span
-            .addClass("ccf-tooltip")
-            .append($("<pre>").addClass("ccf-tooltiptext").text(rankInfo.info));
-    }
+        .addClass(`ccf-${rank}`.toLowerCase())
+        .text("CCF " + rank);
+    
+    span
+        .addClass("ccf-tooltip")
+        .append($("<pre>").addClass("ccf-tooltiptext").text("(" + abbr + ")"));
+    
     return span;
 };
+
+function showRank_dblp(node, title, authorA) {
+    fetchDblp(title, authorA)
+        .then(processResponse)
+        .then((rank_abbr) => getRankSpan(rank_abbr.rank, rank_abbr.abbr))
+        .then((span) => node.after(span))
+        .catch(console.error)
+}
+
+function showRank_abbr(node, abbr) {
+    let rank_abbr = getRankByAbbr(abbr);
+    let span = getRankSpan(rank_abbr.rank, rank_abbr.abbr);
+    node.after(span);
+}
+
+function showRank_url(node, url) {
+    let rank_abbr = getRankByURL(url);
+    let span = getRankSpan(rank_abbr.rank, rank_abbr.abbr);
+    node.after(span);
+}

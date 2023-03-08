@@ -6,7 +6,7 @@
 
 const scholar = {};
 
-scholar.rankSpanList = [];
+
 
 scholar.run = function () {
     let url = window.location.pathname;
@@ -35,7 +35,7 @@ scholar.appendRank = function () {
                 .split(" ");
             let author = data[1];
             let year = data.slice(-3)[0];
-            fetchRank(node, title, author, year, scholar);
+            showRank_dblp(node, title, author)
         }
     });
 };
@@ -51,8 +51,7 @@ scholar.appendRanks = function () {
                 .text()
                 .replace(/[\,\…]/g, "")
                 .split(" ")[1];
-            let year = $(this).find("td.gsc_a_y").text();
-            fetchRank(node, title, author, year, scholar);
+            showRank_dblp(node, title, author)
         }
     });
 };

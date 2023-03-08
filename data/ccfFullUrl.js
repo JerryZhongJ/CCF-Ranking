@@ -4,7 +4,7 @@
  * Copyright (c) 2019-2023 WenyanLiu (https://github.com/WenyanLiu/CCFrank4dblp)
  */
 
-ccf.fullUrl = {
+const fullname2Url = {
     "ACM TRANSACTIONS ON COMPUTER SYSTEMS": "/journals/tocs/tocs",
     "ACM TRANSACTIONS ON STORAGE": "/journals/tos/tos",
     "IEEE TRANSACTIONS ON COMPUTER-AIDED DESIGN OF INTEGRATED CIRCUITS AND SYSTEM": "/journals/tcad/tcad",
