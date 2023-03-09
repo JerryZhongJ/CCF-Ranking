@@ -19,24 +19,18 @@ semanticscholar.run = function () {
 };
 
 semanticscholar.appendRanks = function () {
-    let elements = $(".cl-paper-venue");
+    let elements = $(".cl-paper-row");
     elements.each(function () {
         let element = $(this);
-        let source = element[0].innerText;
-        if (source.length != 0 && !element.next().hasClass("ccf-rank")) {
-            
-            if (source.includes('(')) {
-                source = source.substring(source.indexOf('(') + 1, source.indexOf(')'));
-            }
-            if (source.includes('\'')) {
-                source = source.substring(0, source.indexOf('\'')).trim();
-            }
-            if (source.includes(' ')) {
-                source = source.substring(0, source.indexOf(' ')).trim();
-            }
-            showRank_abbr(element, source)
-            
+        let titleElement = $(".cl-paper-title", element)
+     
+        if (titleElement.next().hasClass("ccf-rank")) {
+            return
         }
+        let title = titleElement.text();
+        let author = $(".cl-paper-authors__author-link", element).first().text();
+
+        showRank_dblp(titleElement, title, author)        
     });
 };
 
