@@ -53,18 +53,12 @@ function showRank_dblp(node, title, authorA) {
 
 function showRank_abbr(node, abbr) {
     let { rank:rank } = getRankByAbbr(abbr);
-    if (rank === undefined) {
-        return
-    }
     let span = getRankSpan(rank, abbr);
     node.after(span);
 }
 
 function showRank_url(node, url) {
     let { rank:rank, abbr:abbr } = getRankByURL(url);
-    if (rank === undefined) {
-        return
-    }
     let span = getRankSpan(rank, abbr);
     node.after(span);
 }

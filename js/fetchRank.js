@@ -27,22 +27,19 @@ async function processResponse(response) {
         throw new Error(response.statusText);
     }
     
-    let final_rank = ""
+    let final_rank = "NONE"
     let final_abbr = ""
 
     content = await response.json()
     for (let { url:dblp_url, number:dblp_number, venue:dblp_abbr }of getDblpInfos(content)) {
         for (let { rank:rank, abbr:abbr } of getRanks(dblp_url, dblp_number, dblp_abbr)) {
-            if (rank !== undefined && (final_rank == "" || final_rank > rank)) {
+            if (rank !== undefined && (final_rank == "NONE" || final_rank > rank)) {
                 final_rank = rank
                 final_abbr = abbr
             }
         }
     }
 
-    if (final_rank == "") {
-        throw new Error("No rank found.")
-    }
     return {rank: final_rank, abbr: final_abbr}
 
 }
