@@ -22,15 +22,15 @@ semanticscholar.appendRanks = function () {
     let elements = $(".cl-paper-row");
     elements.each(function () {
         let element = $(this);
-        let titleElement = $(".cl-paper-title", element)
+        let titleSpan = $(".cl-paper-title > span", element)
      
-        if (titleElement.next().hasClass("ccf-rank")) {
+        if (titleSpan.next().hasClass("ccf-rank")) {
             return
         }
-        let title = titleElement.text();
+        let title = titleSpan.text();
         let author = $(".cl-paper-authors__author-link", element).first().text();
 
-        showRank_dblp(titleElement, title, author)        
+        showRank_dblp(titleSpan, title, author)        
     });
 };
 

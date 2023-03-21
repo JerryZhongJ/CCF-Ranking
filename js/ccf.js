@@ -30,35 +30,32 @@ function getRankByAbbr(abbr) {
 
 
 
-function getRankSpan  (rank, abbr) {
-    let span = $("<span>")
-        .addClass("ccf-rank")
-        .addClass(`ccf-${rank}`.toLowerCase())
-        .text("CCF " + rank);
+function putEmptyRankSpan(node) {
+    return $("<span>").addClass("ccf-rank").insertAfter(node);
     
-    span
-        .addClass("ccf-tooltip")
-        .append($("<pre>").addClass("ccf-tooltiptext").text(abbr + " - " + abbr2Fullname[abbr]));
-    
-    return span;
 };
 
+function setRankSpan(span, rank, abbr) {
+    span.addClass(`ccf-${rank}`.toLowerCase())
+        .text("CCF " + rank)
+        .addClass("ccf-tooltip")
+        .append($("<pre>").addClass("ccf-tooltiptext").text(abbr + " - " + abbr2Fullname[abbr]));
+}
+
 function showRank_dblp(node, title, authorA) {
+    span = putEmptyRankSpan(node)
     fetchDblp(title, authorA)
         .then(processResponse)
-        .then((rank_abbr) => getRankSpan(rank_abbr.rank, rank_abbr.abbr))
-        .then((span) => node.after(span))
+        .then((rank_abbr) => setRankSpan(span, rank_abbr.rank, rank_abbr.abbr))
         .catch(console.error)
 }
 
 function showRank_abbr(node, abbr) {
     let { rank:rank } = getRankByAbbr(abbr);
-    let span = getRankSpan(rank, abbr);
-    node.after(span);
+    setRankSpan(putEmptyRankSpan(node), rank, abbr)
 }
 
 function showRank_url(node, url) {
     let { rank:rank, abbr:abbr } = getRankByURL(url);
-    let span = getRankSpan(rank, abbr);
-    node.after(span);
+    setRankSpan(putEmptyRankSpan(node), rank, abbr)
 }
