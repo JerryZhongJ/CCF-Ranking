@@ -37,13 +37,14 @@ function putEmptyRankSpan(node) {
 
 function setRankSpan(span, rank, abbr) {
     span.addClass(`ccf-${rank}`.toLowerCase())
-        .text("CCF " + rank)
-        .addClass("ccf-tooltip")
+        .text("CCF " + rank);
+    span.addClass("ccf-tooltip")
         .append($("<pre>").addClass("ccf-tooltiptext").text(abbr + " - " + abbr2Fullname[abbr]));
 }
 
 function showRank_dblp(node, title, authorA) {
-    span = putEmptyRankSpan(node)
+    let span = putEmptyRankSpan(node)
+    // span.text("hello world")
     fetchDblp(title, authorA)
         .then(processResponse)
         .then((rank_abbr) => setRankSpan(span, rank_abbr.rank, rank_abbr.abbr))
