@@ -117,12 +117,13 @@
         "js/semanticscholar.js",
         "js/ccf.js",
         "js/fetchRank.js",
-        "data/ccfRankAbbr.js",
-        "data/ccfRankFull.js",
-        "data/ccfRankDb.js",
-        "data/ccfRankUrl.js",
-        "data/ccfFullUrl.js",
-        "data/ccfAbbrFull.js",
+        "./data/abbr_fullname.js",
+        "./data/dataGen.js",
+        "./data/fullname_url.js",
+        "./data/url_abbr.js",
+        "./data/url_fullname.js",
+        "./data/url_longurl.js",
+        "./data/url_rank.js",
         "script.js"
       ]
     }
