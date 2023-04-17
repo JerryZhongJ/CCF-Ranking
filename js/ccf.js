@@ -20,14 +20,24 @@ function getRankByURL(url) {
 };
 
 function getRankByAbbr(abbr) {
-
     let full = abbr2Fullname[abbr];
     let url = fullname2Url[full];
     let rank = URL2Rank[url];
     return {rank: rank, abbr: abbr}
-    
 }
 
+function getRankFromDBLP(title, author) {
+    return new Promise((resolve, reject) => {
+        chrome.runtime.sendMessage(
+            message = { title: title, author: author },
+            callback = (rank_abbr) => {
+                
+                resolve(rank_abbr)
+                
+            }
+        )
+    })
+}
 
 
 function putEmptyRankSpan(node) {
@@ -45,10 +55,9 @@ function setRankSpan(span, rank, abbr) {
 function showRank_dblp(node, title, authorA) {
     let span = putEmptyRankSpan(node)
     // span.text("hello world")
-    fetchDblp(title, authorA)
-        .then(processResponse)
-        .then((rank_abbr) => setRankSpan(span, rank_abbr.rank, rank_abbr.abbr))
-        .catch(console.error)
+    getRankFromDBLP(title, authorA)
+        .then(({rank:rank, abbr:abbr}) => putEmptyRankSpan(span), rank, abbr)
+    
 }
 
 function showRank_abbr(node, abbr) {

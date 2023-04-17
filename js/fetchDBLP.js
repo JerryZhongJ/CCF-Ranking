@@ -26,7 +26,7 @@ async function processResponse(response) {
     if (!response.ok) {
         throw new Error(response.statusText);
     }
-    
+
     let final_rank = "NONE"
     let final_abbr = ""
 
@@ -44,20 +44,8 @@ async function processResponse(response) {
 
 }
 
-function fetchDblp(title, authorA) {
-    var parameters = new URLSearchParams(
-        {
-            q: title,
-            author: authorA,
-            format: "json"
-        }
-    );
-    return fetch("https://dblp.org/search/publ/api?" + parameters)
-}
 
 function *getDblpInfos(res) {
-    
-  
 
     var hits = res.result.hits
     if (hits["@total"] == 0) {
@@ -77,8 +65,6 @@ function *getDblpInfos(res) {
         };
         
     }
-        
-    
 }
 
 
@@ -90,3 +76,19 @@ function *getRanks(dblp_url, dblp_number, dblp_venue) {
     yield getRankByAbbr(dblp_venue)
     
 }
+
+chrome.runtime.onMessage.addListener((message, sendResponse) => {
+    var parameters = new URLSearchParams(
+        {
+            q: message.title,
+            author: message.author,
+            format: "json"
+        }
+    );
+    fetch("https://dblp.org/search/publ/api?" + parameters)
+        .then(processResponse)
+        .then((rank_abbr) => sendResponse(rank_abbr))
+        .catch(error => {
+            chrome.extension.getBackgroundPage().console.error(error)
+        })
+  });
