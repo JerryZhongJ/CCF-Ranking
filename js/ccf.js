@@ -56,7 +56,7 @@ function showRank_dblp(node, title, authorA) {
     let span = putEmptyRankSpan(node)
     // span.text("hello world")
     getRankFromDBLP(title, authorA)
-        .then(({rank:rank, abbr:abbr}) => putEmptyRankSpan(span), rank, abbr)
+        .then(({rank:rank, abbr:abbr}) => putEmptyRankSpan(span, rank, abbr))
     
 }
 
