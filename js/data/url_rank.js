@@ -4,7 +4,7 @@
  * Copyright (c) 2019-2023 WenyanLiu (https://github.com/WenyanLiu/CCFrank4dblp)
  */
 
- const URL2Rank = {
+ export const URL2Rank = {
     "/journals/tocs/tocs": "A",
     "/journals/tos/tos": "A",
     "/journals/tcad/tcad": "A",

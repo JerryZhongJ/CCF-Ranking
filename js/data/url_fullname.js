@@ -4,7 +4,7 @@
  * Copyright (c) 2019-2023 WenyanLiu (https://github.com/WenyanLiu/CCFrank4dblp)
  */
 
- const URL2Fullname = {
+ export const URL2Fullname = {
     "/journals/tocs/tocs": "ACM Transactions on Computer Systems",
     "/journals/tos/tos": "ACM Transactions on Storage",
     "/journals/tcad/tcad": "IEEE Transactions On Computer-Aided Design Of Integrated Circuits And System",

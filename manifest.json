@@ -116,18 +116,14 @@
         "js/scholar.js",
         "js/semanticscholar.js",
         "js/ccf.js",
-        "js/fetchRank.js",
-        "./data/abbr_fullname.js",
-        "./data/dataGen.js",
-        "./data/fullname_url.js",
-        "./data/url_abbr.js",
-        "./data/url_fullname.js",
-        "./data/url_longurl.js",
-        "./data/url_rank.js",
         "script.js"
       ]
     }
   ],
+  "background":{
+    "service_worker": "js/service.js",
+    "type": "module"
+  },
   "host_permissions": [
     "*://dblp.org/*"
   ]

@@ -20,7 +20,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
+import { URL2Rank } from "./data/url_rank.js";
+import { URL2Abbr } from "./data/url_abbr.js";
+import { abbr2Fullname } from "./data/abbr_fullname.js";
+import { URL2LongURL } from "./data/url_longurl.js";
+import { fullname2Url } from "./data/fullname_url.js";
 
 async function processResponse(response) {
     if (!response.ok) {
@@ -30,7 +34,7 @@ async function processResponse(response) {
     let final_rank = "NONE"
     let final_abbr = ""
 
-    content = await response.json()
+    let content = await response.json()
     for (let { url:dblp_url, number:dblp_number, venue:dblp_abbr }of getDblpInfos(content)) {
         for (let { rank:rank, abbr:abbr } of getRanks(dblp_url, dblp_number, dblp_abbr)) {
             if (rank !== undefined && (final_rank == "NONE" || final_rank > rank)) {
@@ -40,7 +44,7 @@ async function processResponse(response) {
         }
     }
 
-    return {rank: final_rank, abbr: final_abbr}
+    return {rank: final_rank, abbr: final_abbr, fullname: abbr2Fullname[final_abbr]}
 
 }
 
@@ -53,8 +57,8 @@ function *getDblpInfos(res) {
     }
         
     for(let hit of hits.hit){
-        info = hit.info
-        url = info.url
+        let info = hit.info
+        let url = info.url
         yield {
             url: url.substring(
                 url.indexOf("/rec/") + 4,
@@ -67,7 +71,25 @@ function *getDblpInfos(res) {
     }
 }
 
+function getRankByURL(url) {
 
+    let rank;
+    let abbr;
+    rank = URL2Rank[url];
+
+    if (rank !== undefined) {
+        abbr = URL2Abbr[url];
+    }
+
+    return {rank: rank, abbr: abbr};
+};
+
+function getRankByAbbr(abbr) {
+    let full = abbr2Fullname[abbr];
+    let url = fullname2Url[full];
+    let rank = URL2Rank[url];
+    return {rank: rank, abbr: abbr}
+}
 
 function *getRanks(dblp_url, dblp_number, dblp_venue) {
     dblp_url = URL2LongURL[dblp_url]
@@ -77,18 +99,26 @@ function *getRanks(dblp_url, dblp_number, dblp_venue) {
     
 }
 
-chrome.runtime.onMessage.addListener((message, sendResponse) => {
-    var parameters = new URLSearchParams(
-        {
-            q: message.title,
-            author: message.author,
-            format: "json"
-        }
-    );
-    fetch("https://dblp.org/search/publ/api?" + parameters)
-        .then(processResponse)
-        .then((rank_abbr) => sendResponse(rank_abbr))
-        .catch(error => {
-            chrome.extension.getBackgroundPage().console.error(error)
-        })
+chrome.runtime.onMessage.addListener((message, messageSender, sendResponse) => {
+    switch (message.by) {
+        case "dblp":
+            var parameters = new URLSearchParams(
+                {
+                    q: message.title,
+                    author: message.author,
+                    format: "json"
+                }
+            );
+            fetch("https://dblp.org/search/publ/api?" + parameters)
+                .then(processResponse)  
+                .then(sendResponse)
+                
+            return true
+        case "abbr":
+            sendResponse(getRankByAbbr(message.abbr))
+            break
+        case "url":
+            sendResponse(getRankByURL(message.url))
+            break
+    }
   });

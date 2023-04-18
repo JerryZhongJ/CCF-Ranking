@@ -4,7 +4,7 @@
  * Copyright (c) 2019-2023 WenyanLiu (https://github.com/WenyanLiu/CCFrank4dblp)
  */
 
-const abbr2Fullname = {
+export const abbr2Fullname = {
     "": "",
     "TOCS": "ACM TRANSACTIONS ON COMPUTER SYSTEMS",
     "TOS": "ACM TRANSACTIONS ON STORAGE",

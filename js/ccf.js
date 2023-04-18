@@ -5,39 +5,6 @@
  */
 
 
-function getRankByURL(url) {
-   
-    
-    let rank;
-    let abbr;
-    rank = URL2Rank[url];
-
-    if (rank !== undefined) {
-        abbr = URL2Abbr[url];
-    }
-
-    return {rank: rank, abbr: abbr};
-};
-
-function getRankByAbbr(abbr) {
-    let full = abbr2Fullname[abbr];
-    let url = fullname2Url[full];
-    let rank = URL2Rank[url];
-    return {rank: rank, abbr: abbr}
-}
-
-function getRankFromDBLP(title, author) {
-    return new Promise((resolve, reject) => {
-        chrome.runtime.sendMessage(
-            message = { title: title, author: author },
-            callback = (rank_abbr) => {
-                
-                resolve(rank_abbr)
-                
-            }
-        )
-    })
-}
 
 
 function putEmptyRankSpan(node) {
@@ -45,27 +12,27 @@ function putEmptyRankSpan(node) {
     
 };
 
-function setRankSpan(span, rank, abbr) {
+function setRankSpan(span, rank, abbr, fullname) {
     span.addClass(`ccf-${rank}`.toLowerCase())
         .text("CCF " + rank);
     span.addClass("ccf-tooltip")
-        .append($("<pre>").addClass("ccf-tooltiptext").text(abbr + " - " + abbr2Fullname[abbr]));
+        .append($("<pre>").addClass("ccf-tooltiptext").text(abbr + " - " + fullname));
 }
 
-function showRank_dblp(node, title, authorA) {
+function showRank_dblp(node, title, author) {
     let span = putEmptyRankSpan(node)
     // span.text("hello world")
-    getRankFromDBLP(title, authorA)
-        .then(({rank:rank, abbr:abbr}) => putEmptyRankSpan(span, rank, abbr))
+    chrome.runtime.sendMessage({by: 'dblp', title:title, author: author})
+        .then(({rank:rank, abbr:abbr}) => setRankSpan(span, rank, abbr))
     
 }
 
 function showRank_abbr(node, abbr) {
-    let { rank:rank } = getRankByAbbr(abbr);
-    setRankSpan(putEmptyRankSpan(node), rank, abbr)
+    chrome.runtime.sendMessage({by: 'abbr', abbr:abbr})
+        .then(({rank:rank, abbr:abbr }) => setRankSpan(putEmptyRankSpan(node), rank, abbr))
 }
 
 function showRank_url(node, url) {
-    let { rank:rank, abbr:abbr } = getRankByURL(url);
-    setRankSpan(putEmptyRankSpan(node), rank, abbr)
+    chrome.runtime.sendMessage({by: 'url', url:url})
+        .then(({rank:rank, abbr:abbr, fullname:fullname }) => setRankSpan(putEmptyRankSpan(node), rank, abbr, fullname))
 }
