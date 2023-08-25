@@ -75,6 +75,7 @@ function getRankByURL(url) {
 
     let rank;
     let abbr;
+    url = URL2LongURL[url]
     rank = URL2Rank[url];
 
     if (rank !== undefined) {
@@ -109,7 +110,7 @@ chrome.runtime.onMessage.addListener((message, messageSender, sendResponse) => {
                     format: "json"
                 }
             );
-            fetch("https://dblp.org/search/publ/api?" + parameters)
+            fetch("https://dblp.org/search/publ/api?" + parameters, {keepalive: true})
                 .then(processResponse)  
                 .then(sendResponse)
                 

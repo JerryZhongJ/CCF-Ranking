@@ -74,7 +74,7 @@ dblp.appendRank = function (selector) {
             headline.indexOf("/db/") + 3,
             headline.lastIndexOf("/")
         );
-        url = URL2LongURL[urls];
+        
         showRank_url(element, url)
         
     }
