@@ -34,18 +34,5 @@ semanticscholar.appendRanks = function () {
     });
 };
 
-semanticscholar.appendRank = function (selector) {
-    let element = $(selector);
-    let headline = window.location.pathname;
-    if (headline.length != 0) {
-        
-        let urls = headline.substring(
-            headline.indexOf("/db/") + 3,
-            headline.lastIndexOf("/")
-        );
-        url = URL2LongURL[urls];
-        showRank_url(element, url)
-        
-    }
-};
+
  

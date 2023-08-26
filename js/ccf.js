@@ -28,11 +28,13 @@ function showRank_dblp(node, title, author) {
 }
 
 function showRank_abbr(node, abbr) {
+    let span = putEmptyRankSpan(node)
     chrome.runtime.sendMessage({by: 'abbr', abbr:abbr})
-        .then(({rank:rank, abbr:abbr }) => setRankSpan(putEmptyRankSpan(node), rank, abbr))
+        .then(({rank:rank, abbr:abbr }) => setRankSpan(span, rank, abbr))
 }
 
 function showRank_url(node, url) {
+    let span = putEmptyRankSpan(node)
     chrome.runtime.sendMessage({by: 'url', url:url})
-        .then(({rank:rank, abbr:abbr, fullname:fullname }) => setRankSpan(putEmptyRankSpan(node), rank, abbr, fullname))
+        .then(({rank:rank, abbr:abbr, fullname:fullname }) => setRankSpan(span, rank, abbr, fullname))
 }

@@ -73,22 +73,25 @@ function *getDblpInfos(res) {
 
 function getRankByURL(url) {
 
-    let rank;
+    let rank = "";
     let abbr;
     url = URL2LongURL[url]
     rank = URL2Rank[url];
 
-    if (rank !== undefined) {
+    if (rank !== undefined) 
         abbr = URL2Abbr[url];
-    }
+    else
+        rank = "NONE";
 
-    return {rank: rank, abbr: abbr};
+    return {rank, abbr: abbr};
 };
 
 function getRankByAbbr(abbr) {
     let full = abbr2Fullname[abbr];
     let url = fullname2Url[full];
     let rank = URL2Rank[url];
+    if (rank === undefined)
+        rank = "NONE";
     return {rank: rank, abbr: abbr}
 }
 

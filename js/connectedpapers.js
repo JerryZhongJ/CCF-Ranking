@@ -13,36 +13,28 @@ connectedpapers.run = function () {
     window.onload = function () {
         setTimeout(function () {
             if (url.indexOf('/main') != -1) {
-                connectedpapers.appendRank();
                 connectedpapers.appendRanks();
             }
         }, 3000);
     };
 };
 
-connectedpapers.appendRank = function () {
-    let element = $(".list-group-item-mod.minilist-main-paper.main");
-    let nodes = element.find(".horizontal-flexbox");
-    let titlenode = nodes[1];
-    let datanode = $(nodes[2]).find("div");
 
-    let title = titlenode.innerText;
-    let author = (datanode[0].innerText).split(/[\s.,]+/)[1];
-    let year = datanode[1].innerText;
-    showRank_dblp($(titlenode).find("h5"), title, author)
-};
 
 connectedpapers.appendRanks = function () {
-    let elements = $(".list-group-item-mod.minilist-list-entry");
+    let elements = $(".list-group-item-mod");
     elements.each(function () {
-        let nodes = $(this).find(".horizontal-flexbox");
-        let titlenode = nodes[0];
-        let datanode = $(nodes[1]).find("div");
-
-        let title = titlenode.innerText;
-        let author = (datanode[0].innerText).split(/[\s.,]+/)[1];
-        let year = datanode[1].innerText;
-       
-        showRank_dblp($(titlenode).find("h5"), title, author)
+        let texts = $(this).find(".searchable-text");
+        let author
+        let title
+        texts.each(function () {
+            let text = $(this)
+            if (text.hasClass('authors'))
+                author = text.text().split(/[\s.,]+/)[1]
+            else
+                title = text.text()
+        })
+        let titlenode = $(this).find("h5")
+        showRank_dblp(titlenode, title, author)
     });
 };

@@ -48,17 +48,17 @@ dblp.appendRanks = function () {
                 }
             }
 
-            let urls = source.substring(
+            let url = source.substring(
                 source.indexOf("/db/") + 3,
-                source.lastIndexOf(".html")
+                source.lastIndexOf("/")
             );
-            var pattern = /[0-9]{1,4}(-[0-9]{1,4})?$/;
-            if (pattern.test(urls)) {
-                urls = urls.replace(pattern, "");
-            } else {
-                urls = ""
-            }
-            ;
+            // var pattern = /[0-9]{1,4}(-[0-9]{1,4})?$/;
+            // if (pattern.test(url)) {
+            //     url = url.replace(pattern, "");
+            // } else {
+            //     url = ""
+            // }
+            // ;
             showRank_url(element, url)
         
         }
@@ -70,7 +70,7 @@ dblp.appendRank = function (selector) {
     let headline = window.location.pathname;
     if (headline.length != 0) {
        
-        let urls = headline.substring(
+        let url = headline.substring(
             headline.indexOf("/db/") + 3,
             headline.lastIndexOf("/")
         );
