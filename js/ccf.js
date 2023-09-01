@@ -19,22 +19,23 @@ function setRankSpan(span, rank, abbr, fullname) {
         .append($("<pre>").addClass("ccf-tooltiptext").text(abbr + " - " + fullname));
 }
 
-function showRank_dblp(node, title, author) {
+
+function _showRank(node, message) {
+    if(node.next().hasClass("ccf-rank")) return
     let span = putEmptyRankSpan(node)
-    // span.text("hello world")
-    chrome.runtime.sendMessage({by: 'dblp', title:title, author: author})
-        .then(({rank:rank, abbr:abbr}) => setRankSpan(span, rank, abbr))
-    
+    message["type"] = 'get rank'
+    chrome.runtime.sendMessage(message)
+        .then(({rank:rank, abbr:abbr, fullname:fullname }) => setRankSpan(span, rank, abbr, fullname))
+}
+
+function showRank_dblp(node, title, author) {
+    _showRank(node, { by: 'dblp', title:title, author: author})
 }
 
 function showRank_abbr(node, abbr) {
-    let span = putEmptyRankSpan(node)
-    chrome.runtime.sendMessage({by: 'abbr', abbr:abbr})
-        .then(({rank:rank, abbr:abbr }) => setRankSpan(span, rank, abbr))
+    _showRank(node, { by: 'abbr', abbr:abbr})
 }
 
 function showRank_url(node, url) {
-    let span = putEmptyRankSpan(node)
-    chrome.runtime.sendMessage({by: 'url', url:url})
-        .then(({rank:rank, abbr:abbr, fullname:fullname }) => setRankSpan(span, rank, abbr, fullname))
+    _showRank(node, { by: 'url', url:url})
 }
