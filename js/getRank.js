@@ -55,7 +55,9 @@ function *getDblpInfos(res) {
     if (hits["@total"] == 0) {
         return
     }
-        
+    if (hits.hit === undefined)
+        console.error("hits.hit is undefined")
+    
     for(let hit of hits.hit){
         let info = hit.info
         let url = info.url
@@ -96,7 +98,6 @@ function getRankByAbbr(abbr) {
 }
 
 function *getRanks(dblp_url, dblp_number, dblp_venue) {
-    dblp_url = URL2LongURL[dblp_url]
     yield getRankByURL(dblp_url)
     yield getRankByAbbr(dblp_number)
     yield getRankByAbbr(dblp_venue)

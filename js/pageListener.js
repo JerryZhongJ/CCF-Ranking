@@ -30,5 +30,5 @@ addListener("dblp/db_index", [{ hostContains: "dblp.", pathPrefix: "/db", pathSu
 addListener("google scholar/scholar", [{hostContains: "scholar.google.", pathPrefix: "/scholar"}])
 addListener("google scholar/citations", [{hostContains: "scholar.google.", pathPrefix: "/citations"}])
 addListener("connected papers", [{hostContains: ".connectedpapers.", pathPrefix: "/main"}])
-addListener("semantic scholar", [{hostContains: ".semanticscholar."}])
-
+addListener("semantic scholar/paper", [{hostContains: ".semanticscholar.", pathPrefix: "/paper"}])
+addListener("semantic scholar/search", [{hostContains: ".semanticscholar.", pathPrefix: "/search"}])

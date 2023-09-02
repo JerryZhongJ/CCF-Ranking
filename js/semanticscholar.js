@@ -4,22 +4,26 @@
  * Copyright (c) 2019-2023 WenyanLiu (https://github.com/WenyanLiu/CCFrank4dblp)
  */
 
-parsers["semantic scholar"] =  () => {
-    waitForElm(".result-page")
-        .then(() => {
-            let elements = $(".cl-paper-row");
-            elements.each(function () {
-                let element = $(this);
-                let titleElement = $(".cl-paper-title", element).contents().last()
-                let title = titleElement.text();
-                let author = $(".cl-paper-authors__author-link", element).first().text();
+parsers["semantic scholar/search"] = async () => {
+    parse_semantic_scholar_list(await waitForElm(".result-page"))    
+}
 
-                showRank_dblp(titleElement, title, author)
-            })
-        })
+parsers["semantic scholar/paper"] = async () => {
+    parse_semantic_scholar_list(await waitForElm(".citation-list__citations"))  
 }
     
 
+function parse_semantic_scholar_list(list) {
+    onChildListAdded(list, elements => {
+        elements.each(async (index, element) => {
+            
+            let titleElement = (await waitForElm(".cl-paper-title", element)).contents().first()
+            let title = titleElement.text();
+            let author = (await waitForElm(".cl-paper-authors__author-link", element)).first().text();
 
+            showRank_dblp(titleElement, title, author)
+        })
+    })  
+}
 
  

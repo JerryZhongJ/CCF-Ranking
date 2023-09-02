@@ -1,17 +1,25 @@
-function waitForElm(selector) {
+/**
+ * @param {string} selector
+ * @param {jQuery} root
+ */
+function waitForElm(selector, root) {
     return new Promise(resolve => {
-        elements = $(selector)
+
+        if (root === undefined)
+            root = $(document.body)
+        
+        elements = $(selector, root)
         if (elements.length) {
             return resolve(elements);
         }
-
+                
         (new MutationObserver((mutations, observer) => {
-            elements = $(selector)
+            elements = $(selector, root)
             if (elements.length) {
                 observer.disconnect();
                 return resolve(elements);
             }
-        })).observe(document.body, {
+        })).observe(root[0], {
             childList: true,
             subtree: true
         });
@@ -19,7 +27,7 @@ function waitForElm(selector) {
 }
 
 /**
- * @param {string} selector
+ * @param {string | jQuery} observee
  * @param {function} callback
  * @returns {void}
  * @description
@@ -28,60 +36,53 @@ function waitForElm(selector) {
  * 3. The callback is called immediately if there are already child nodes.
  * This util funtion use callback style, not promise. Because callback should be called several times.
  */
-function onChildListAdded(selector, callback) {
-    node = $(selector)
-    if (node.length == 0) {
+function onChildListAdded(observee, callback) {
+    if (typeof observee === 'string')    
+        nodes = $(observee)
+    else if (observee instanceof jQuery)
+        nodes = observee
+    else {
+        console.error("observee should be a string or jQuery object.")
+        return
+    }
+
+    if (nodes.length == 0) {
         console.warn("jQuery object is empty, please make sure selected nodes exist.")
         return
     }
 
-    if (node.length > 1) {
-        console.warn("Several nodes are matched, but only the first one is observed.")
-    }
-
-    callback(node.children())
-    
-    list = node[0]
-        
-    new MutationObserver(mutations => {
-        addedNodes = mutations.map(a => Array.from(a.addedNodes)).flat()
-        if(addedNodes.length == 0) return
-        callback($(addedNodes))
-    }).observe(list, {
-        childList: true,
-        subtree: false
-    });   
-}
-
-function onElementRemoved(selector) {
-    return new Promise((resolve, reject) => {
-        node_to_remove = $(selector)
-        if (node_to_remove.length == 0) {
-            reject("jQuery object is empty, please make sure selected nodes exist.")
-            return
-        }
-
-        if (node_to_remove.length > 1) {
-            console.warn("Several nodes are matched, but only the first one is observed.")
-        }
-        
-        _node_to_remove = node_to_remove[0]
-        parent = node_to_remove.parent()
-        _parent = parent[0]
-            
-        new MutationObserver((mutations, observer) => {
-            let removed = false
-            mutations.map(a => Array.from(a.removedNodes)).flat().forEach(node => {
-                if (node === _node_to_remove) removed = true
-            })
-            if (!removed) {
-                return
-            }
-            observer.disconnect();
-            resolve(parent)
-        }).observe(_parent, {
+    callback(nodes.children())
+    for (let _node of nodes.toArray()){
+        new MutationObserver(mutations => {
+            addedNodes = mutations.map(a => Array.from(a.addedNodes)).flat()
+            if(addedNodes.length == 0) return
+                callback($(addedNodes))
+        }).observe(_node, {
             childList: true,
             subtree: false
+        });  
+    }    
+}
+
+function waitForElmNotExist(selector, root) {
+    return new Promise(resolve => {
+        if (root === undefined)
+            root = $(document.body)
+        
+        elements = $(selector, root)
+        if (elements.length === 0) {
+            return resolve();
+        }
+
+        (new MutationObserver((mutations, observer) => {
+            elements = $(selector, root)
+            if (elements.length === 0) {
+                observer.disconnect();
+                return resolve();
+            }
+        })).observe(root[0], {
+            childList: true,
+            subtree: true
         });
-    })
+    });
 }
