@@ -27,105 +27,107 @@ import { URL2LongURL } from "./data/url_longurl.js";
 import { fullname2Url } from "./data/fullname_url.js";
 
 async function processResponse(response) {
-    if (!response.ok) {
-        throw new Error(response.statusText);
+  if (!response.ok) {
+    throw Error("HTTP-Error: " + response.status);
+  }
+
+  let final_rank = "NONE";
+  let final_abbr = "";
+
+  let content = await response.json();
+  for (let {
+    url: dblp_url,
+    number: dblp_number,
+    venue: dblp_abbr,
+  } of getDblpInfos(content)) {
+    for (let { rank: rank, abbr: abbr } of getRanks(
+      dblp_url,
+      dblp_number,
+      dblp_abbr
+    )) {
+      if (rank !== undefined && (final_rank == "NONE" || final_rank > rank)) {
+        final_rank = rank;
+        final_abbr = abbr;
+      }
     }
-
-    let final_rank = "NONE"
-    let final_abbr = ""
-
-    let content = await response.json()
-    for (let { url:dblp_url, number:dblp_number, venue:dblp_abbr }of getDblpInfos(content)) {
-        for (let { rank:rank, abbr:abbr } of getRanks(dblp_url, dblp_number, dblp_abbr)) {
-            if (rank !== undefined && (final_rank == "NONE" || final_rank > rank)) {
-                final_rank = rank
-                final_abbr = abbr
-            }
-        }
-    }
-
-    return {rank: final_rank, abbr: final_abbr, fullname: abbr2Fullname[final_abbr]}
-
+  }
+  return {
+    rank: final_rank,
+    abbr: final_abbr,
+    fullname: abbr2Fullname[final_abbr],
+  };
 }
 
+function* getDblpInfos(res) {
+  var hits = res.result.hits;
+  if (hits["@total"] == 0) {
+    return;
+  }
 
-function *getDblpInfos(res) {
-
-    var hits = res.result.hits
-    if (hits["@total"] == 0) {
-        return
-    }
-    if (hits.hit === undefined)
-        console.error("hits.hit is undefined")
-    
-    for(let hit of hits.hit){
-        let info = hit.info
-        let url = info.url
-        yield {
-            url: url.substring(
-                url.indexOf("/rec/") + 4,
-                url.lastIndexOf("/")
-            ),
-            number: info.number,
-            venue: info.venue
-        };
-        
-    }
+  for (let hit of hits.hit) {
+    let info = hit.info;
+    let url = info.url;
+    yield {
+      url: url.substring(url.indexOf("/rec/") + 4, url.lastIndexOf("/")),
+      number: info.number,
+      venue: info.venue,
+    };
+  }
 }
 
 function getRankByURL(url) {
+  let rank = "";
+  let abbr;
+  url = URL2LongURL[url];
+  rank = URL2Rank[url];
 
-    let rank = "";
-    let abbr;
-    url = URL2LongURL[url]
-    rank = URL2Rank[url];
+  if (rank !== undefined) abbr = URL2Abbr[url];
+  else rank = "NONE";
 
-    if (rank !== undefined) 
-        abbr = URL2Abbr[url];
-    else
-        rank = "NONE";
-
-    return {rank: rank, abbr: abbr, fullname: abbr2Fullname[abbr]};
-};
-
-function getRankByAbbr(abbr) {
-    let full = abbr2Fullname[abbr];
-    let url = fullname2Url[full];
-    let rank = URL2Rank[url];
-    if (rank === undefined)
-        rank = "NONE";
-    return {rank: rank, abbr: abbr, fullname: abbr2Fullname[abbr]}
+  return { rank: rank, abbr: abbr, fullname: abbr2Fullname[abbr] };
 }
 
-function *getRanks(dblp_url, dblp_number, dblp_venue) {
-    yield getRankByURL(dblp_url)
-    yield getRankByAbbr(dblp_number)
-    yield getRankByAbbr(dblp_venue)
-    
+function getRankByAbbr(abbr) {
+  let full = abbr2Fullname[abbr];
+  let url = fullname2Url[full];
+  let rank = URL2Rank[url];
+  if (rank === undefined) rank = "NONE";
+  return { rank: rank, abbr: abbr, fullname: abbr2Fullname[abbr] };
+}
+
+function* getRanks(dblp_url, dblp_number, dblp_venue) {
+  yield getRankByURL(dblp_url);
+  yield getRankByAbbr(dblp_number);
+  yield getRankByAbbr(dblp_venue);
 }
 
 chrome.runtime.onMessage.addListener((message, messageSender, sendResponse) => {
-    if (message.type !== 'get rank')
-        return false
-    switch (message.by) {
-        case "dblp":
-            var parameters = new URLSearchParams(
-                {
-                    q: message.title,
-                    author: message.author,
-                    format: "json"
-                }
-            );
-            fetch("https://dblp.org/search/publ/api?" + parameters, {keepalive: true})
-                .then(processResponse)  
-                .then(sendResponse)
-                
-            return true
-        case "abbr":
-            sendResponse(getRankByAbbr(message.abbr))
-            break
-        case "url":
-            sendResponse(getRankByURL(message.url))
-            break
+  if (message.type !== "get rank") return false;
+  let _sendResponse = (response) => {
+    if (response === undefined) {
+      console.log("Sending undefined");
     }
-  });
+    sendResponse(response);
+  };
+  switch (message.by) {
+    case "dblp":
+      var parameters = new URLSearchParams({
+        q: message.title,
+        author: message.author,
+        format: "json",
+      });
+      fetch("https://dblp.org/search/publ/api?" + parameters, /*{
+        keepalive: true,
+      }*/)
+        .then(processResponse)
+        .then(_sendResponse)
+        .catch(console.error);
+      return true;
+    case "abbr":
+      sendResponse(getRankByAbbr(message.abbr));
+      break;
+    case "url":
+      sendResponse(getRankByURL(message.url));
+      break;
+  }
+});

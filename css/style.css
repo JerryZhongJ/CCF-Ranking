@@ -11,6 +11,7 @@
     padding: 1px 8px !important;
     margin-left: 5px !important;
     margin-right: 5px !important;
+    background-color: #6c757d !important;
 }
 
 .ccf-a {
@@ -23,10 +24,6 @@
 
 .ccf-c {
     background-color: #28a745 !important;
-}
-
-.ccf-none {
-    background-color: #6c757d !important;
 }
 
 .ccf-tooltip {
